@@ -124,7 +124,8 @@ egress = [
 
 resource "aws_key_pair" "ec2" {
   key_name   = "ec2"
-  public_key = file("~/.ssh/ec2.pub")}
+  public_key = file("~/.ssh/ec2.pub")
+}
 
 resource "aws_instance" "test_instance" {
   ami           = "ami-0bd9c26722573e69b"
