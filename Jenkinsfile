@@ -11,5 +11,14 @@ pipeline {
                 }
             }    
         }
+        stage('Build') {
+            steps {
+                withCredentials([string(credentialsId: 'aws', variable: 'ACCOUNT_ID')]) {
+                    sh "aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.eu-north-1.amazonaws.com"
+                    sh "docker build -t ${ACCOUNT_ID}.dkr.ecr.eu-north-1.amazonaws.com/testpython:${BUILD_NUMBER} ."
+                    sh "docker push ${ACCOUNT_ID}.dkr.ecr.eu-north-1.amazonaws.com/testpython:${BUILD_NUMBER}"
+                }
+            }
+        }
     }
 }
