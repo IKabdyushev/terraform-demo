@@ -142,6 +142,10 @@ resource "aws_instance" "test_instance" {
   }
 }
 
+resource "aws_ecr_repository" "python" {
+  name                 = "testpython"
+}
+
 output "instance_ip" {
   value = aws_instance.test_instance.*.public_ip
 }
