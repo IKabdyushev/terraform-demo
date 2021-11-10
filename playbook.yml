@@ -1,0 +1,9 @@
+---
+- name: Ensure docker
+  hosts: "all"
+  become: true
+  roles:
+    - geerlingguy.docker
+  vars:
+    docker_users:
+      - ubuntu
