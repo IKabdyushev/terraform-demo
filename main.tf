@@ -133,12 +133,69 @@ resource "aws_key_pair" "ec2" {
   public_key = file("~/.ssh/ec2.pub")
 }
 
+resource "aws_iam_role" "ec2-role" {
+  name = "ec2-read-registry"
+
+  # Terraform's "jsonencode" function converts a
+  # Terraform expression result to valid JSON syntax.
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "read-registry" {
+  name = "read-registry"
+  role = aws_iam_role.ec2-role.id
+
+  # Terraform's "jsonencode" function converts a
+  # Terraform expression result to valid JSON syntax.
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        "Effect": "Allow",
+        "Action": [
+            "ecr:GetAuthorizationToken",
+            "ecr:BatchCheckLayerAvailability",
+            "ecr:GetDownloadUrlForLayer",
+            "ecr:GetRepositoryPolicy",
+            "ecr:DescribeRepositories",
+            "ecr:ListImages",
+            "ecr:DescribeImages",
+            "ecr:BatchGetImage",
+            "ecr:GetLifecyclePolicy",
+            "ecr:GetLifecyclePolicyPreview",
+            "ecr:ListTagsForResource",
+            "ecr:DescribeImageScanFindings"
+        ],
+        "Resource": "*"
+        },
+    ]
+  })
+}
+
+resource "aws_iam_instance_profile" "ec2-registry" {
+  name = "registry-read"
+  role = aws_iam_role.ec2-role.name
+}
+
 resource "aws_instance" "test_instance" {
   ami           = "ami-0bd9c26722573e69b"
   instance_type = "t3.micro"
   key_name  = aws_key_pair.ec2.key_name
   vpc_security_group_ids = [aws_security_group.allow_ssh.id]
   subnet_id = aws_subnet.new-public-01.id
+  iam_instance_profile = aws_iam_instance_profile.ec2-registry.name
   root_block_device {
     volume_size = 8
   }
