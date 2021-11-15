@@ -91,7 +91,7 @@ resource "aws_lb_target_group" "myec2" {
 
 resource "aws_lb_target_group_attachment" "testpython" {
   target_group_arn = aws_lb_target_group.myec2.arn
-  target_id        = aws_instance.test_instance.id
+  target_id        = aws_instance.test_instance.*.private_ip
   port             = 8080
 }
 
