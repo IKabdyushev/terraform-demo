@@ -5,6 +5,12 @@ terraform {
       version = "~> 3.0"
     }
   }
+  backend "s3" {
+    bucket = "do1821-terraform-state"
+    key    = "testpython"
+    dynamodb_table = "do1821-terraform-lock"
+    region = "eu-north-1"
+  }
 }
 
 
