@@ -51,12 +51,22 @@ resource "aws_subnet" "new-public-01" {
   }
 }
 
+resource "aws_subnet" "new-public-02" {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = "10.8.192.0/18"
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "new-public-02"
+  }
+}
+
 resource "aws_lb" "mylb" {
   name               = "testpythonlb"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.allow_web.id]
-  subnets            = [aws_subnet.new-public-01.id]
+  subnets            = [aws_subnet.new-public-01.id, aws_subnet.new-public-02.id]
 
   enable_deletion_protection = false
 }
