@@ -51,6 +51,106 @@ resource "aws_subnet" "new-public-01" {
   }
 }
 
+resource "aws_lb" "mylb" {
+  name               = "testpythonlb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.allow_web.id]
+  subnets            = aws_subnet.new-public-01.id
+
+  enable_deletion_protection = false
+}
+
+resource "aws_lb_target_group" "myec2" {
+  name        = "testpython"
+  port        = 80
+  protocol    = "HTTP"
+  target_type = "ip"
+  vpc_id      = aws_vpc.main.id
+}
+
+resource "aws_lb_target_group_attachment" "testpython" {
+  target_group_arn = aws_lb_target_group.myec2.arn
+  target_id        = aws_instance.test_instance.id
+  port             = 8080
+}
+
+resource "aws_security_group" "allow_web" {
+  name        = "allow_web"
+  description = "Allow WEB inbound traffic"
+  vpc_id      = aws_vpc.main.id
+
+  ingress = [
+    {
+      description      = "WEB from World"
+      from_port        = 80
+      to_port          = 80
+      protocol         = "tcp"
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = []
+      prefix_list_ids = []
+      security_groups = []
+      self = false
+    }
+  ]
+egress = [
+    {
+      description      = "for all outgoing traffics"
+      from_port        = 0
+      to_port          = 0
+      protocol         = "-1"
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = ["::/0"]
+      prefix_list_ids = []
+      security_groups = []
+      self = false
+    }
+  ]
+
+
+  tags = {
+    Name = "allow_web"
+  }
+}
+
+resource "aws_security_group" "allow_elb" {
+  name        = "allow_elb"
+  description = "Allow ELB inbound traffic"
+  vpc_id      = aws_vpc.main.id
+
+  ingress = [
+    {
+      description      = "From ELB to EC2"
+      from_port        = 8080
+      to_port          = 8080
+      protocol         = "tcp"
+      cidr_blocks      = []
+      ipv6_cidr_blocks = []
+      prefix_list_ids = []
+      security_groups = [aws_security_group.allow_web.id]
+      self = false
+    }
+  ]
+egress = [
+    {
+      description      = "for all outgoing traffics"
+      from_port        = 0
+      to_port          = 0
+      protocol         = "-1"
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = ["::/0"]
+      prefix_list_ids = []
+      security_groups = []
+      self = false
+    }
+  ]
+
+
+  tags = {
+    Name = "allow_elb"
+  }
+}
+
 resource "aws_internet_gateway" "myigw" {
   vpc_id = aws_vpc.main.id
 
