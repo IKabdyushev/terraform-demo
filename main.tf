@@ -8,7 +8,7 @@ terraform {
   backend "s3" {
     bucket = "do1821-terraform-state"
     key    = "testpython"
-    dynamodb_table = "do1821-terraform-lock"
+    dynamodb_table = "do1821-lock"
     region = "eu-north-1"
   }
 }
