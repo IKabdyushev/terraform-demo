@@ -7,3 +7,12 @@
   vars:
     docker_users:
       - ubuntu
+      
+- name: Install awscli
+  hosts: "all"
+  become: true
+  tasks:
+    - name: Install APT
+      apt:
+        name: awscli
+        state: present
