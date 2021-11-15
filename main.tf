@@ -56,7 +56,7 @@ resource "aws_lb" "mylb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.allow_web.id]
-  subnets            = aws_subnet.new-public-01.id
+  subnets            = [aws_subnet.new-public-01.id]
 
   enable_deletion_protection = false
 }
