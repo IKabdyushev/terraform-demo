@@ -1,0 +1,6 @@
+version: "3.3"
+services:
+  web:
+    image: 673477728319.dkr.ecr.eu-north-1.amazonaws.com/testpython:${BUILD_NUMBER}
+    ports:
+      - "8080:8080"
