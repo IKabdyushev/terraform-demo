@@ -1,0 +1,13 @@
+- name: Deploy webserver
+  hosts: "all"
+  tasks:
+  - name: Copy docker-compose
+    ansible.builtin.copy:
+      src: docker-compose.yml
+      dest: ~/docker-compose.yml
+      
+  - name: Docker login
+    shell: aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 673477728319.dkr.ecr.eu-north-1.amazonaws.com
+
+  - name: launch docker-compose
+    shell: "BUILD_NUMBER={{ BUILD_NUMBER }} docker-compose up -d"
