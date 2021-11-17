@@ -318,7 +318,7 @@ resource "aws_instance" "test_instance" {
   ami           = "ami-0bd9c26722573e69b"
   instance_type = "t3.micro"
   key_name  = aws_key_pair.ec2.key_name
-  vpc_security_group_ids = [aws_security_group.allow_ssh.id]
+  vpc_security_group_ids = [aws_security_group.allow_ssh.id, aws_security_group.allow_elb.id]
   subnet_id = aws_subnet.new-public-01.id
   iam_instance_profile = aws_iam_instance_profile.ec2-registry.name
   root_block_device {
