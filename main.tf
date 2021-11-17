@@ -85,15 +85,15 @@ resource "aws_lb_target_group" "myec2" {
   name        = "testpython"
   port        = 80
   protocol    = "HTTP"
-  target_type = "ip"
+  target_type = "instance"
   vpc_id      = aws_vpc.main.id
 }
 
-# resource "aws_lb_target_group_attachment" "testpython" {
-#   target_group_arn = aws_lb_target_group.myec2.arn
-#   target_id        = aws_instance.test_instance.*.private_ip
-#   port             = 8080
-# }
+resource "aws_lb_target_group_attachment" "testpython" {
+  target_group_arn = aws_lb_target_group.myec2.arn
+  target_id        = aws_instance.test_instance.id
+  port             = 8080
+}
 
 resource "aws_security_group" "allow_web" {
   name        = "allow_web"
