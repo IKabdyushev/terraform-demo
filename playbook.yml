@@ -1,6 +1,7 @@
 ---
 - name: Ensure docker
   hosts: "all"
+  gather_facts: false
   become: true
   roles:
     - geerlingguy.docker
@@ -10,6 +11,7 @@
       
 - name: Install awscli
   hosts: "all"
+  gather_facts: false
   become: true
   tasks:
     - name: Install APT
