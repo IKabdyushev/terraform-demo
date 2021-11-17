@@ -1,5 +1,6 @@
 - name: Deploy webserver
   hosts: "all"
+  gather_facts: false
   tasks:
   - name: Copy docker-compose
     ansible.builtin.copy:
