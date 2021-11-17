@@ -19,6 +19,11 @@ provider "aws" {
         shared_credentials_file = "~/.aws/credentials"
 }
 
+variable "instance_name" {
+  type        = string
+  description = "Instance name"
+}
+
 resource "aws_vpc" "main" {
   cidr_block = "10.8.0.0/16"
 }
@@ -321,7 +326,7 @@ resource "aws_instance" "test_instance" {
   }
 
   tags = {
-    Name = "HelloWorld"
+    Name = var.instance_name
   }
 }
 
